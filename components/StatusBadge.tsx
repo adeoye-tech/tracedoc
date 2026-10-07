@@ -4,15 +4,15 @@ type StatusProps = {
 
 export default function StatusBadge({ status }: StatusProps) {
   const styles = {
-    "On Track":
-      "bg-green-100 text-green-700",
-    Waiting:
-      "bg-yellow-100 text-yellow-700",
-    Stuck:
-      "bg-red-100 text-red-700",
-    "Action Required":
-      "bg-orange-100 text-orange-700",
-  };
+  "On Track":
+    "bg-green-50 text-green-700",
+  Waiting:
+    "bg-amber-50 text-amber-700",
+  Stuck:
+    "bg-red-50 text-red-700",
+  "Action Required":
+    "bg-orange-50 text-orange-700",
+};
 
   return (
     <span

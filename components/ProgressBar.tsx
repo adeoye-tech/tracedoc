@@ -1,24 +1,31 @@
 type ProgressBarProps = {
-  stage: string;
+  currentStage: string;
+  timeline: string[];
 };
 
 export default function ProgressBar({
-  stage,
+  currentStage,
+  timeline,
 }: ProgressBarProps) {
-  const progressMap: Record<string, number> = {
-    Submission: 25,
-    Verification: 50,
-    Processing: 75,
-    Approved: 100,
-  };
+  const currentIndex = timeline.indexOf(currentStage);
 
-  const progress = progressMap[stage] || 0;
+  const progress =
+  currentIndex === -1 || timeline.length <= 1
+    ? 0
+    : Math.round(
+        (currentIndex / (timeline.length - 1)) * 100
+      );
 
   return (
     <div className="mt-4">
       <div className="mb-2 flex justify-between text-sm">
-        <span>{stage}</span>
-        <span>{progress}%</span>
+        <span className="font-medium text-slate-700">
+          {currentStage}
+        </span>
+
+        <span className="text-slate-500">
+          {progress}%
+        </span>
       </div>
 
       <div className="h-3 w-full rounded-full bg-gray-200">

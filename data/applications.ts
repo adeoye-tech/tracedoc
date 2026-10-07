@@ -1,6 +1,6 @@
 import { Application } from "../types/applications";
 
-export const applications = [
+export const applications: Application[] = [
   {
     id: 1,
     title: "University Transcript",
@@ -9,6 +9,9 @@ export const applications = [
     status: "Waiting",
     currentStage: "Verification",
     submittedDate: "2026-07-12",
+    expiryDate: "2026-12-31",
+expectedDays: 14,
+documents: [],
     timeline: [
       "Submitted",
       "Payment Confirmed",
@@ -26,6 +29,9 @@ export const applications = [
     status: "On Track",
     currentStage: "Processing",
     submittedDate: "2026-08-01",
+    expiryDate: "2026-12-31",
+expectedDays: 14,
+documents: [],
     timeline: [
       "Submitted",
       "Payment Confirmed",
@@ -43,6 +49,9 @@ export const applications = [
     status: "Action Required",
     currentStage: "Document Review",
     submittedDate: "2026-08-05",
+    expiryDate: "2026-12-31",
+expectedDays: 14,
+documents: [],
     timeline: [
       "Submitted",
       "Document Review",

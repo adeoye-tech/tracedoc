@@ -1,22 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* TraceDoc Brand Colors */
+  --primary: #355c7d;
+  --primary-dark: #29485f;
+  --primary-light: #eaf1f5;
+
+  /* App Colors */
+  --background: #f5f7fa;
+  --foreground: #172033;
+
+  /* Status Colors */
+  --success: #15803d;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --action: #ea580c;
 }
 
 @theme inline {
+  /* TraceDoc Brand */
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+/* Tracedoc Blue Scale */
+    --color-blue-50: #f5f8fa;
+  --color-blue-100: #eaf1f5;
+  --color-blue-200: #d5e2ea;
+  --color-blue-300: #b8ccd9;
+  --color-blue-400: #7f9fb4;
+  --color-blue-500: #5d829b;
+  --color-blue-600: #355c7d;
+  --color-blue-700: #29485f;
+  --color-blue-800: #203a4d;
+  --color-blue-900: #172c3b;
+
+  /* App */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Status */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-action: var(--action);
+
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

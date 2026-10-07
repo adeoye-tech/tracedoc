@@ -71,7 +71,7 @@ export default function ExportPdfButton() {
   return (
     <button
       onClick={exportPDF}
-      className="rounded-lg bg-green-600 px-4 py-2 text-white"
+      className="rounded-xl bg-slate-700 px-5 py-3 text-white shadow-sm transition hover:bg-slate-800 cursor-pointer"
     >
       Export PDF
     </button>

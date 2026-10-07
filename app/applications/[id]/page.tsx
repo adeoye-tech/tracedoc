@@ -1,16 +1,17 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useApplications } from "@/context/ApplicationsContext";
 import { useParams } from "next/navigation";
 import StatusBadge from "@/components/StatusBadge";
 import Link from "next/link";
+import DocumentUpload from "@/components/DocumentUpload";
+import { Application } from "@/types/applications";
+import ProgressBar from "@/components/ProgressBar";
 
 export default function ApplicationDetails() {
  const {
   applications,
   updateApplication,
-  darkMode,
-  setDarkMode,
 } = useApplications();
   const params = useParams();
   const id = params.id as string;
@@ -34,20 +35,54 @@ const [
   application?.organization || ""
 );
 
-const [editedStatus, setEditedStatus] =
-  useState(application?.status || "");
+
+  const [editedTimeline, setEditedTimeline] =
+  useState<string[]>(application?.timeline || []);
   const handleSave = () => {
   if (!application) return;
 
   updateApplication({
-    ...application,
-    title: editedTitle,
-    organization:
-      editedOrganization,
-    status: editedStatus,
-  });
+  ...application,
+  title: editedTitle,
+  organization: editedOrganization,
+  
+  timeline: editedTimeline,
+  currentStage: editedTimeline.includes(
+    application.currentStage
+  )
+    ? application.currentStage
+    : editedTimeline[0] || "",
+});
 
   setIsEditing(false);
+};
+const handleDocumentUpload = (document: {
+  name: string;
+  url: string;
+}) => {
+  if (!application) return;
+
+  updateApplication({
+    ...application,
+    documents: [
+      ...(application.documents || []),
+      document,
+    ],
+  });
+};
+const handleDocumentDelete = (index: number) => {
+  if (!application) return;
+
+  const updatedDocuments = [
+    ...(application.documents || []),
+  ];
+
+  updatedDocuments.splice(index, 1);
+
+  updateApplication({
+    ...application,
+    documents: updatedDocuments,
+  });
 };
 
   if (!application) {
@@ -70,36 +105,19 @@ const currentIndex =
     application.currentStage
   );
 
-const progress =
-  (currentIndex /
-    (application.timeline.length - 1)) *
-  100;
+
   return (
-   <main
-  className={`min-h-screen p-6 transition-colors duration-300 ${
-    localStorage.getItem("theme") === "dark"
-      ? "bg-slate-900 text-white"
-      : "bg-gradient-to-br from-slate-50 to-blue-50 text-black"
-  }`}
->
+  <main className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50 p-6 text-black">
       <div className="mx-auto max-w-5xl">
         <Link
   href="/dashboard"
-  className={`mb-6 inline-block font-medium transition ${
-  darkMode
-    ? "text-blue-400 hover:text-blue-300"
-    : "text-blue-600 hover:text-blue-700"
-}`}
+  className="mb-6 inline-block font-medium text-blue-600 transition hover:text-blue-700"
 >
   ← Back to Dashboard
 </Link>
 
         <div
-  className={`rounded-3xl p-8 shadow-xl border ${
-    darkMode
-      ? "bg-slate-800 border-slate-700"
-      : "bg-white border-gray-100"
-  }`}
+ className="rounded-3xl border border-gray-100 bg-white p-8 shadow-xl"
 >
 
           <div className="mb-4 flex items-center justify-between">
@@ -113,9 +131,7 @@ const progress =
   />
 ) : (
  <h1
-  className={`text-4xl font-bold ${
-    darkMode ? "text-white" : "text-black"
-  }`}
+  className="text-4xl font-bold text-black"
 >
     {application.title}
   </h1>
@@ -123,7 +139,13 @@ const progress =
 
   {!isEditing && (
     <button
-      onClick={() => setIsEditing(true)}
+     onClick={() => {
+  setEditedTitle(application.title);
+  setEditedOrganization(application.organization);
+  
+  setEditedTimeline([...application.timeline]);
+  setIsEditing(true);
+}}
      className="rounded-xl bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700"
     >
       Edit
@@ -143,26 +165,22 @@ const progress =
   />
 ) : (
   <p
-  className={`mb-6 ${
-    darkMode ? "text-gray-400" : "text-gray-500"
-  }`}
+  className="mb-6 text-gray-500"
 >
     {application.organization}
   </p>
 )}
 
           {isEditing ? (
-  <select
-    value={editedStatus}
-    onChange={(e) =>
-      setEditedStatus(e.target.value)
-    }
-    className="rounded-lg border p-3"
-  >
-    <option>Waiting</option>
-    <option>On Track</option>
-    <option>Action Required</option>
-  </select>
+ <div className="rounded-lg bg-slate-50 px-4 py-3">
+  <p className="text-sm text-slate-500">
+    Status
+  </p>
+
+  <div className="mt-1">
+    <StatusBadge status={application.status} />
+  </div>
+</div>
 ) : (
   <StatusBadge
     status={application.status}
@@ -190,17 +208,61 @@ const progress =
 
          <div
   className={`mt-8 space-y-4 rounded-2xl p-6 ${
-    darkMode
-      ? "bg-slate-900/40 border border-slate-700"
-      : "bg-slate-50 border border-gray-200"
+    
+     "bg-slate-50 border border-gray-200"
   }`}
 >
 
-            <p>
-              <strong>Current Stage:</strong>{" "}
-              {application.currentStage}
-            </p>
+           <div className="mt-4">
+  <label className="mb-2 block font-semibold text-slate-700">
+    Current Stage
+  </label>
 
+  <select
+  value={application.currentStage}
+  onChange={async (e) => {
+    const newStage = e.target.value;
+
+    await updateApplication({
+      ...application,
+      currentStage: newStage,
+    });
+  }}
+  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-700 outline-none focus:border-blue-500"
+>
+  {application.timeline.map((stage) => (
+    <option key={stage} value={stage}>
+      {stage}
+    </option>
+  ))}
+</select>
+</div>
+{isEditing && (
+  <div className="mt-6">
+    <label className="mb-2 block font-semibold text-slate-700">
+      Application Stages
+    </label>
+
+    <div className="space-y-3">
+      {editedTimeline.map((stage, index) => (
+        <input
+          key={index}
+          type="text"
+          value={stage}
+          onChange={(e) => {
+            const updatedTimeline = [...editedTimeline];
+
+            updatedTimeline[index] = e.target.value;
+
+            setEditedTimeline(updatedTimeline);
+          }}
+          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-700 outline-none focus:border-blue-500"
+          placeholder={`Stage ${index + 1}`}
+        />
+      ))}
+    </div>
+  </div>
+)}
             <p>
               <strong>Submitted:</strong>{" "}
               {application.submittedDate}
@@ -210,47 +272,64 @@ const progress =
               <strong>Category:</strong>{" "}
               {application.category}
             </p>
+           <div className="mt-4">
+  <strong>Documents:</strong>
 
-          </div>
-          <div className="mb-10">
-  <div className="mb-2 flex justify-between">
-    <span className="font-semibold">
-      Progress
-    </span>
-
-   <span className="font-semibold text-blue-500">
-  {Math.round(progress)}%
-</span>
-  </div>
-
-  <div
-    className={`h-4 w-full rounded-full overflow-hidden ${
-    darkMode ? "bg-slate-700" : "bg-gray-200"
-  }`}
->
-    <div
-      className="h-3 rounded-full bg-blue-600 transition-all"
-      style={{
-        width: `${progress}%`,
-      }}
+  <div className="mt-4">
+    <DocumentUpload
+      onUpload={handleDocumentUpload}
     />
   </div>
+
+  {application.documents?.length ? (
+    <ul className="mt-2 space-y-2">
+    {application.documents.map(
+  (doc, index) => (
+    <li
+      key={index}
+      className="flex items-center justify-between rounded-lg border p-3"
+    >
+      <a
+        href={doc.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:underline"
+      >
+        {doc.name}
+      </a>
+
+      <button
+        type="button"
+        onClick={() => handleDocumentDelete(index)}
+        className="rounded-lg bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
+      >
+        Delete
+      </button>
+    </li>
+  )
+)}
+    </ul>
+  ) : (
+    <p>No documents uploaded</p>
+  )}
 </div>
 
-          <div className="mt-10">
+          </div>
 
-            <h2 className="mb-6 text-3xl font-bold">
-              Timeline
-            </h2>
+<ProgressBar
+  currentStage={application.currentStage}
+  timeline={application.timeline}
+/>
+
+<div className="mt-10">
+
+  <h2 className="mb-6 text-3xl font-bold">
+    Timeline
+  </h2>
 
             <div className="space-y-4">
 
-              {application.timeline.map((step, index) => {
-  const currentIndex =
-    application.timeline.indexOf(
-      application.currentStage
-    );
-
+             {application.timeline.map((step, index) => {
   const completed = index < currentIndex;
   const current = index === currentIndex;
 
@@ -274,15 +353,7 @@ const progress =
     {completed ? "✓" : index + 1}
   </div>
 
-  {index !== application.timeline.length - 1 && (
-    <div
-      className={`absolute top-10 h-12 w-1 ${
-        index < currentIndex
-          ? "bg-green-600"
-          : "bg-slate-600"
-      }`}
-    />
-  )}
+
 </div>
 
       <p
@@ -291,8 +362,7 @@ const progress =
       ? "font-bold text-yellow-500"
       : completed
       ? "text-green-400"
-      : darkMode
-      ? "text-gray-300"
+     
       : "text-gray-700"
   }`}
 >
