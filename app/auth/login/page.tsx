@@ -40,8 +40,8 @@ const [isLoading, setIsLoading] = useState(false);
 };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+   <main className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-8 sm:p-6">
+<div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
         <h1 className="text-2xl font-bold text-slate-800">
           Welcome back to TraceDoc
         </h1>

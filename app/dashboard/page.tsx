@@ -139,7 +139,7 @@ const upcomingDeadlines = applications
 >
       <div className="mx-auto max-w-7xl">
        
-  <div className="flex items-center justify-between">
+  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
  <h1 className="text-4xl font-bold tracking-tight text-slate-900">
     TraceDoc Dashboard
@@ -151,7 +151,7 @@ const upcomingDeadlines = applications
   </div>
   
 
- <div className="flex items-center gap-3">
+ <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
   <Link
     href="/"
     className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-black transition hover:bg-slate-50"
@@ -188,7 +188,7 @@ const upcomingDeadlines = applications
     )}
   </button>
   {showNotifications && (
-  <div className="absolute right-0 top-14 z-50 w-96 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+  <div className="absolute right-0 top-14 z-50 w-[calc(100vw-2rem)] max-w-96 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
     <div className="mb-3 flex items-center justify-between">
       <h2 className="font-semibold text-slate-800">
         Notifications
