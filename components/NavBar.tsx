@@ -9,10 +9,11 @@ export default function Navbar() {
           href="/"
           className="flex items-center gap-2"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white">
-            T
-          </div>
-
+           <img
+    src="/tracedoc-logo.png"
+    alt="TraceDoc logo"
+    className="w-8 h-8"
+  />
           <span className="text-xl font-bold tracking-tight text-slate-900">
             Trace<span className="text-blue-600">Doc</span>
           </span>

@@ -146,7 +146,7 @@ const upcomingDeadlines = applications
   </h1>
 
   <p className="mt-2 text-lg font-medium text-slate-700">
-    Welcome back, {profile?.fullName || "there"} 
+    Welcome back, {profile?.fullName || ""} 
   </p>
   </div>
   
